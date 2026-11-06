@@ -1,0 +1,57 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function validWatchlistItem() {
+      let data = request.resource.data;
+
+      return data.keys().hasAll([
+          'id',
+          'mediaType',
+          'title',
+          'posterPath',
+          'backdropPath',
+          'overview',
+          'releaseDate',
+          'voteAverage',
+          'status',
+          'currentSeason',
+          'currentEpisode',
+          'totalSeasons',
+          'seasonEpisodeCount',
+          'addedAt',
+          'lastWatchedAt',
+          'streamingProviders',
+          'source'
+        ])
+        && data.id is int
+        && data.mediaType in ['movie', 'tv']
+        && data.title is string
+        && data.title.size() > 0
+        && data.title.size() <= 300
+        && data.status in ['PLAN_TO_WATCH', 'WATCHING']
+        && data.currentSeason is int
+        && data.currentEpisode is int
+        && data.totalSeasons is int
+        && data.addedAt is int
+        && data.lastWatchedAt is int
+        && data.voteAverage is number
+        && data.posterPath is string
+        && data.backdropPath is string
+        && data.overview is string
+        && data.releaseDate is string
+        && data.seasonEpisodeCount is string
+        && data.streamingProviders is string
+        && data.source is string;
+    }
+
+    match /users/{userId}/watchlist/{itemId} {
+      allow read, delete: if isOwner(userId);
+      allow create, update: if isOwner(userId) && validWatchlistItem();
+    }
+  }
+}
