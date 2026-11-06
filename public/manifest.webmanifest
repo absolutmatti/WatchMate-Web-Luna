@@ -1,0 +1,18 @@
+{
+  "id": "/",
+  "name": "WatchMate TV – Mobile Companion",
+  "short_name": "WatchMate",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#060A18",
+  "theme_color": "#060A18",
+  "icons": [
+    {
+      "src": "/watchmate-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
